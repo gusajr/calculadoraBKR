@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CBKR – Calculadora de Rendimiento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --verde-oscuro: #064D3B;
+      --verde-medio: #0B5E45;
+      --verde-claro: #1BBC8F;
+      --verde-menta: #0d9e78;
+      --blanco: #FFFFFF;
+      --gris-claro: #f4f7f4;
+      --texto-oscuro: #0a2e22;
+      --sombra: 0 8px 32px rgba(6,77,59,0.18);
+    }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--gris-claro);
+      color: var(--texto-oscuro);
+      min-height: 100vh;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: var(--verde-oscuro);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 40px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.25);
+    }
+
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .bear-icon {
+      width: 52px;
+      height: 52px;
+      background: rgba(255,255,255,0.12);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid var(--verde-claro);
+      font-size: 26px;
+    }
+
+    .logo-text {
+      font-family: 'Playfair Display', serif;
+      color: var(--blanco);
+      line-height: 1.1;
+    }
+    .logo-text span { display: block; font-size: 11px; letter-spacing: 3px; color: var(--verde-claro); font-family: 'DM Sans', sans-serif; font-weight: 500; text-transform: uppercase; margin-top: 2px; }
+
+    .header-badge {
+      background: var(--verde-claro);
+      color: var(--verde-oscuro);
+      font-size: 11px;
+      font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    /* ── HERO STRIP ── */
+    .hero-strip {
+      background: linear-gradient(135deg, var(--verde-oscuro) 0%, var(--verde-medio) 60%, var(--verde-claro) 100%);
+      padding: 48px 40px 40px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    .hero-strip::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 220px; height: 220px;
+      border-radius: 50%;
+      background: rgba(27,188,143,0.12);
+    }
+    .hero-strip::after {
+      content: '';
+      position: absolute;
+      bottom: -40px; left: -40px;
+      width: 160px; height: 160px;
+      border-radius: 50%;
+      background: rgba(27,188,143,0.08);
+    }
+    .hero-strip h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      color: var(--blanco);
+      margin-bottom: 10px;
+      position: relative; z-index:1;
+    }
+    .hero-strip p {
+      color: rgba(255,255,255,0.78);
+      font-size: 1rem;
+      position: relative; z-index:1;
+    }
+
+    /* ── PLANES INFO ── */
+    .planes-bar {
+      background: var(--verde-oscuro);
+      display: flex;
+      gap: 0;
+      overflow: hidden;
+    }
+    .plan-card {
+      flex: 1;
+      padding: 22px 28px;
+      border-right: 1px solid rgba(255,255,255,0.1);
+      transition: background 0.2s;
+    }
+    .plan-card:last-child { border-right: none; }
+    .plan-card h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem;
+      color: var(--verde-claro);
+      margin-bottom: 6px;
+    }
+    .plan-card p {
+      color: rgba(255,255,255,0.75);
+      font-size: 0.82rem;
+      line-height: 1.5;
+    }
+    .plan-tasa {
+      display: inline-block;
+      margin-top: 8px;
+      background: var(--verde-claro);
+      color: var(--verde-oscuro);
+      font-weight: 700;
+      font-size: 0.9rem;
+      padding: 3px 10px;
+      border-radius: 12px;
+    }
+
+    /* ── CALCULATOR CARD ── */
+    .calc-wrapper {
+      max-width: 1000px;
+      margin: 40px auto;
+      padding: 0 20px 60px;
+    }
+
+    .calc-card {
+      background: var(--blanco);
+      border-radius: 20px;
+      box-shadow: var(--sombra);
+      overflow: hidden;
+    }
+
+    .calc-header {
+      background: linear-gradient(90deg, var(--verde-oscuro), var(--verde-medio));
+      padding: 24px 32px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .calc-header-icon { font-size: 28px; }
+    .calc-header h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--blanco);
+      font-size: 1.35rem;
+    }
+    .calc-header p { color: rgba(255,255,255,0.7); font-size: 0.83rem; margin-top: 2px; }
+
+    .calc-body { padding: 32px; }
+
+    /* Selector de plan */
+    .field-label {
+      display: block;
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--verde-oscuro);
+      margin-bottom: 10px;
+    }
+
+    .plan-toggle {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      margin-bottom: 28px;
+    }
+
+    .plan-btn {
+      border: 2px solid #d0e8df;
+      background: transparent;
+      border-radius: 12px;
+      padding: 14px 12px;
+      cursor: pointer;
+      text-align: left;
+      transition: all 0.2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .plan-btn:hover { border-color: var(--verde-claro); background: #f0fdf7; }
+    .plan-btn.active {
+      border-color: var(--verde-claro);
+      background: linear-gradient(135deg, #e8faf4, #d4f5e8);
+      box-shadow: 0 0 0 3px rgba(27,188,143,0.15);
+    }
+    .plan-btn .pb-title { font-weight: 600; font-size: 0.9rem; color: var(--verde-oscuro); display: block; }
+    .plan-btn .pb-sub { font-size: 0.75rem; color: #5a8a75; margin-top: 2px; display: block; }
+    .plan-btn .pb-rate {
+      display: inline-block;
+      margin-top: 8px;
+      background: var(--verde-claro);
+      color: var(--blanco);
+      font-size: 0.8rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 8px;
+    }
+    .plan-btn.active .pb-rate { background: var(--verde-oscuro); }
+
+    /* Selector de plazo */
+    .plazo-group {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+    .plazo-btn {
+      flex: 1;
+      padding: 10px 6px;
+      border: 2px solid #d0e8df;
+      background: transparent;
+      border-radius: 10px;
+      cursor: pointer;
+      font-family: 'DM Sans', sans-serif;
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: #3a6b5a;
+      transition: all 0.2s;
+      text-align: center;
+    }
+    .plazo-btn:hover { border-color: var(--verde-claro); }
+    .plazo-btn.active {
+      border-color: var(--verde-oscuro);
+      background: var(--verde-oscuro);
+      color: var(--blanco);
+    }
+
+    /* Input de monto */
+    .monto-field {
+      margin-bottom: 28px;
+    }
+    .monto-input-wrap {
+      display: flex;
+      align-items: center;
+      border: 2px solid #d0e8df;
+      border-radius: 12px;
+      overflow: hidden;
+      transition: border-color 0.2s;
+      background: var(--blanco);
+    }
+    .monto-input-wrap:focus-within { border-color: var(--verde-claro); box-shadow: 0 0 0 3px rgba(27,188,143,0.15); }
+    .monto-prefix {
+      background: #f0fdf7;
+      padding: 14px 16px;
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: var(--verde-oscuro);
+      border-right: 2px solid #d0e8df;
+    }
+    #miDinero {
+      border: none;
+      outline: none;
+      padding: 14px 16px;
+      font-size: 1.2rem;
+      font-family: 'DM Sans', sans-serif;
+      font-weight: 500;
+      color: var(--texto-oscuro);
+      width: 100%;
+      background: transparent;
+    }
+    #miDinero::placeholder { color: #b0ccc4; font-weight: 300; }
+
+    .monto-hint {
+      margin-top: 6px;
+      font-size: 0.76rem;
+      color: #7aab94;
+    }
+
+    /* Resultado */
+    .resultado-box {
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px rgba(6,77,59,0.12);
+    }
+
+    .resultado-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 24px;
+    }
+    .resultado-row.intereses {
+      background: linear-gradient(90deg, var(--verde-claro), var(--verde-menta));
+    }
+    .resultado-row.total-row {
+      background: var(--verde-oscuro);
+    }
+    .resultado-label {
+      font-size: 0.82rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      opacity: 0.85;
+      color: var(--blanco);
+    }
+    .resultado-valor {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      color: var(--blanco);
+      font-weight: 700;
+    }
+    .resultado-valor.total-row { font-size: 1.9rem; }
+
+    /* ── CONTACTO ── */
+    .contacto-section {
+      background: linear-gradient(135deg, var(--verde-oscuro) 0%, #0a3d2e 100%);
+      padding: 50px 40px;
+      text-align: center;
+    }
+    .contacto-section h2 {
+      font-family: 'Playfair Display', serif;
+      color: var(--blanco);
+      font-size: 2rem;
+      margin-bottom: 8px;
+    }
+    .contacto-section p { color: rgba(255,255,255,0.75); margin-bottom: 28px; }
+
+    .contacto-cards {
+      display: flex;
+      gap: 16px;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+    .contacto-card {
+      background: rgba(255,255,255,0.08);
+      border: 1px solid rgba(27,188,143,0.3);
+      border-radius: 14px;
+      padding: 20px 28px;
+      min-width: 180px;
+      color: var(--blanco);
+      text-decoration: none;
+      transition: all 0.2s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .contacto-card:hover {
+      background: rgba(27,188,143,0.15);
+      border-color: var(--verde-claro);
+      transform: translateY(-3px);
+    }
+    .contacto-card .cc-icon { font-size: 28px; }
+    .contacto-card .cc-label { font-size: 0.75rem; letter-spacing: 1px; text-transform: uppercase; color: var(--verde-claro); font-weight: 600; }
+    .contacto-card .cc-value { font-weight: 500; font-size: 0.92rem; }
+
+    /* FOOTER */
+    footer {
+      background: #041f17;
+      text-align: center;
+      padding: 20px;
+      color: rgba(255,255,255,0.35);
+      font-size: 0.78rem;
+    }
+
+    /* Animación entrada */
+    @keyframes fadeUp {
+      from { opacity:0; transform: translateY(20px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .calc-card { animation: fadeUp 0.5s ease both; }
+
+    @media (max-width: 600px) {
+      header { padding: 14px 20px; }
+      .hero-strip { padding: 36px 20px 30px; }
+      .planes-bar { flex-direction: column; }
+      .plan-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .calc-body { padding: 24px 20px; }
+      .resultado-valor { font-size: 1.3rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <div class="logo-area">
+      <div class="bear-icon">🐻</div>
+      <div class="logo-text">
+        BearBreakers
+        <span>Inversiones</span>
+      </div>
+    </div>
+    <div class="header-badge">✦ Rendimientos reales</div>
+  </header>
+
+  <!-- HERO -->
+  <div class="hero-strip">
+    <h1>Calculadora de Rendimiento</h1>
+    <p>Descubre cuánto puede crecer tu dinero con nosotros</p>
+  </div>
+
+  <!-- PLANES INFO BAR -->
+  <div class="planes-bar">
+    <div class="plan-card">
+      <h3>Rendimiento Mensual</h3>
+      <p>Plazo de 1 a 12 meses. Interés compuesto mensual.</p>
+      <span class="plan-tasa">10% anual</span>
+    </div>
+    <div class="plan-card">
+      <h3>Rendimiento Semestral</h3>
+      <p>Plazo de 6 o 12 meses. Interés compuesto cada 6 meses.</p>
+      <span class="plan-tasa">12% anual</span>
+    </div>
+    <div class="plan-card">
+      <h3>Rendimiento Anual</h3>
+      <p>Plazo fijo de 12 meses. Sin interés compuesto.</p>
+      <span class="plan-tasa">14% anual</span>
+    </div>
+  </div>
+
+  <!-- CALCULADORA -->
+  <div class="calc-wrapper">
+    <div class="calc-card">
+      <div class="calc-header">
+        <div class="calc-header-icon">📈</div>
+        <div>
+          <h2>Simula tu inversión</h2>
+          <p>Resultados instantáneos y sin compromiso</p>
+        </div>
+      </div>
+
+      <div class="calc-body">
+
+        <!-- Plan -->
+        <label class="field-label">1. Elige tu plan de ahorro</label>
+        <div class="plan-toggle" style="grid-template-columns:1fr 1fr 1fr;">
+          <button class="plan-btn active" id="planMensual" onclick="seleccionarPlan('mensual')">
+            <span class="pb-title">Mensual</span>
+            <span class="pb-sub">1 – 12 meses · Interés compuesto</span>
+            <span class="pb-rate">10% anual</span>
+          </button>
+          <button class="plan-btn" id="planSemestral" onclick="seleccionarPlan('semestral')">
+            <span class="pb-title">Semestral</span>
+            <span class="pb-sub">6 – 12 meses · Interés compuesto</span>
+            <span class="pb-rate">12% anual</span>
+          </button>
+          <button class="plan-btn" id="planAnual" onclick="seleccionarPlan('anual')">
+            <span class="pb-title">Anual</span>
+            <span class="pb-sub">Solo 12 meses · Sin compuesto</span>
+            <span class="pb-rate">14% anual</span>
+          </button>
+        </div>
+
+        <!-- Plazo -->
+        <label class="field-label">2. Selecciona el plazo</label>
+        <div class="plazo-group" id="plazoGroup">
+          <!-- Se llena dinámicamente según el plan -->
+        </div>
+
+        <!-- Monto -->
+        <div class="monto-field">
+          <label class="field-label" for="miDinero">3. ¿Cuánto quieres invertir?</label>
+          <div class="monto-input-wrap">
+            <span class="monto-prefix">$</span>
+            <input type="text" id="miDinero" placeholder="0.00" oninput="calcular()" />
+          </div>
+          <p class="monto-hint" id="montoHint">Interés compuesto mensual · Tasa 10% anual</p>
+        </div>
+
+        <!-- Resultado -->
+        <div class="resultado-box">
+          <div class="resultado-row intereses">
+            <span class="resultado-label">Intereses generados</span>
+            <span class="resultado-valor" id="ganancia">$0.00</span>
+          </div>
+          <div class="resultado-row total-row">
+            <span class="resultado-label">Total al finalizar</span>
+            <span class="resultado-valor" id="total">$0.00</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- CONTACTO -->
+  <div class="contacto-section">
+    <h2>¡Contáctanos!</h2>
+    <p>Si te interesa alguno de nuestros planes, comunícate con nosotros</p>
+    <div class="contacto-cards">
+      <a class="contacto-card" href="tel:5535571605">
+        <span class="cc-icon">📞</span>
+        <span class="cc-label">Teléfono</span>
+        <span class="cc-value">55 3557 1605</span>
+      </a>
+      <a class="contacto-card" href="https://facebook.com/InversionesBearbreaker" target="_blank">
+        <span class="cc-icon">📘</span>
+        <span class="cc-label">Facebook</span>
+        <span class="cc-value">InversionesBearbreaker</span>
+      </a>
+      <a class="contacto-card" href="https://instagram.com/bearbreakers" target="_blank">
+        <span class="cc-icon">📸</span>
+        <span class="cc-label">Instagram</span>
+        <span class="cc-value">@bearbreakers</span>
+      </a>
+    </div>
+  </div>
+
+  <footer>
+    © 2024 BearBreakers Inversiones · Todos los derechos reservados
+  </footer>
+
+  <script>
+    // ── CONFIGURACIÓN DE PLANES ──────────────────────────────────────────────
+    const PLANES = {
+      mensual: {
+        tasa: 0.10,           // 10% anual
+        compuesto: true,
+        periodoMeses: 1,      // capitaliza cada 1 mes
+        plazosDisponibles: [1,2,3,4,5,6,7,8,9,10,11,12],
+        hint: 'Interés compuesto mensual · Tasa 10% anual'
+      },
+      semestral: {
+        tasa: 0.12,           // 12% anual
+        compuesto: true,
+        periodoMeses: 6,      // capitaliza cada 6 meses
+        plazosDisponibles: [6, 12],
+        hint: 'Interés compuesto cada 6 meses · Tasa 12% anual'
+      },
+      anual: {
+        tasa: 0.14,           // 14% anual
+        compuesto: false,
+        periodoMeses: 12,
+        plazosDisponibles: [12],
+        hint: 'Sin interés compuesto · Tasa 14% anual · Plazo fijo 12 meses'
+      }
+    };
+
+    let planActual = 'mensual';
+    let plazoMeses = 1;
+
+    // ── INICIALIZAR ──────────────────────────────────────────────────────────
+    function init() {
+      seleccionarPlan('mensual');
+    }
+
+    // ── SELECCIÓN DE PLAN ────────────────────────────────────────────────────
+    function seleccionarPlan(plan) {
+      planActual = plan;
+
+      // Marcar botón activo
+      ['mensual','semestral','anual'].forEach(p => {
+        document.getElementById('plan' + p.charAt(0).toUpperCase() + p.slice(1))
+          .classList.toggle('active', p === plan);
+      });
+
+      // Hint
+      document.getElementById('montoHint').textContent = PLANES[plan].hint;
+
+      // Reconstruir botones de plazo
+      const cfg = PLANES[plan];
+      const group = document.getElementById('plazoGroup');
+      group.innerHTML = '';
+
+      cfg.plazosDisponibles.forEach((m, i) => {
+        const btn = document.createElement('button');
+        btn.className = 'plazo-btn' + (i === 0 ? ' active' : '');
+        btn.id = 'plazo' + m;
+        btn.textContent = m === 1 ? '1 mes' : m + ' meses';
+        btn.onclick = () => seleccionarPlazo(m);
+        group.appendChild(btn);
+      });
+
+      // Plazo por defecto = primero disponible
+      plazoMeses = cfg.plazosDisponibles[0];
+      calcular();
+    }
+
+    // ── SELECCIÓN DE PLAZO ───────────────────────────────────────────────────
+    function seleccionarPlazo(meses) {
+      plazoMeses = meses;
+      PLANES[planActual].plazosDisponibles.forEach(m => {
+        const btn = document.getElementById('plazo' + m);
+        if (btn) btn.classList.toggle('active', m === meses);
+      });
+      calcular();
+    }
+
+    // ── CÁLCULO ──────────────────────────────────────────────────────────────
+    function calcular() {
+      const raw = document.getElementById('miDinero').value.replace(/,/g, '');
+      const capital = parseFloat(raw) || 0;
+      const cfg = PLANES[planActual];
+      let total;
+
+      if (!cfg.compuesto) {
+        // Interés simple anual
+        total = capital * (1 + cfg.tasa * (plazoMeses / 12));
+      } else {
+        // Interés compuesto: A = P(1 + r/n)^(n*t)
+        // r = tasa anual, n = veces que capitaliza por año, t = años
+        const n = 12 / cfg.periodoMeses;   // periodos por año
+        const t = plazoMeses / 12;          // tiempo en años
+        total = capital * Math.pow(1 + cfg.tasa / n, n * t);
+      }
+
+      const intereses = total - capital;
+      const fmt = n => '$' + n.toLocaleString('es-MX', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+      document.getElementById('ganancia').textContent = fmt(intereses);
+      document.getElementById('total').textContent = fmt(total);
+    }
+
+    init();
+  </script>
+
+</body>
+</html>
