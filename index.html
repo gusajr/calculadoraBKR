@@ -192,8 +192,8 @@
 
     .plan-toggle {
       display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 10px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
       margin-bottom: 28px;
     }
 
@@ -230,11 +230,12 @@
     /* Selector de plazo */
     .plazo-group {
       display: flex;
+      flex-wrap: wrap;
       gap: 12px;
       margin-bottom: 28px;
     }
     .plazo-btn {
-      flex: 1;
+      flex: 1 0 75px;
       padding: 10px 6px;
       border: 2px solid #d0e8df;
       background: transparent;
@@ -389,13 +390,52 @@
     }
     .calc-card { animation: fadeUp 0.5s ease both; }
 
+    @media (max-width: 768px) {
+      .plan-toggle {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 600px) {
-      header { padding: 14px 20px; }
+      header {
+        padding: 12px 16px;
+        flex-direction: column;
+        gap: 10px;
+      }
+      .bear-icon {
+        width: 44px;
+        height: 44px;
+        font-size: 22px;
+      }
+      .logo-text {
+        font-size: 1.1rem;
+      }
+      .header-badge {
+        font-size: 10px;
+        padding: 4px 12px;
+      }
       .hero-strip { padding: 36px 20px 30px; }
       .planes-bar { flex-direction: column; }
       .plan-card { border-right: none; border-bottom: 1px solid rgba(255,255,255,0.1); }
+      .plan-card:last-child { border-bottom: none; }
+      .calc-wrapper { margin: 20px auto; }
+      .calc-header { padding: 20px 20px; }
       .calc-body { padding: 24px 20px; }
+      .resultado-row { padding: 14px 20px; }
       .resultado-valor { font-size: 1.3rem; }
+      .resultado-valor.total-row { font-size: 1.5rem; }
+    }
+
+    @media (max-width: 400px) {
+      .resultado-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+      .resultado-valor {
+        align-self: stretch;
+        text-align: right;
+      }
     }
   </style>
 </head>
@@ -453,7 +493,7 @@
 
         <!-- Plan -->
         <label class="field-label">1. Elige tu plan de ahorro</label>
-        <div class="plan-toggle" style="grid-template-columns:1fr 1fr 1fr;">
+        <div class="plan-toggle">
           <button class="plan-btn active" id="planMensual" onclick="seleccionarPlan('mensual')">
             <span class="pb-title">Mensual</span>
             <span class="pb-sub">1 – 12 meses · Interés compuesto</span>
